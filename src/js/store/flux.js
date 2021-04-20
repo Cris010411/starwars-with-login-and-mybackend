@@ -3,6 +3,7 @@ import { element } from "prop-types";
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			token: null,
 			planets: [],
 			peoples: [],
 			favoritos: [],
@@ -61,10 +62,53 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 			// Use getActions to call a function within a fuction
 
+			login: async (email, password) => {
+				const opts = {
+					method: "POST",
+					body: JSON.stringify({
+						email: email,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						password: password
+					})
+				};
+				try {
+					const resp = await fetch("https://3000-plum-tarsier-6ediw6c1.ws-us03.gitpod.io//login", opts);
+					if (resp.status !== 200) {
+						alert("Tiene algun error");
+						return false;
+					}
+					const data = await resp.json();
+					sessionStorage.setItem("token", data.access_token);
+					setStore({ token: data.access_token });
+					return true;
+				} catch (error) {
+					console.error("There has been an error login in");
+				}
+			},
+
+			createUser: async (email, password, nane, is_active) => {
+				var requestOptions = {
+					method: "POST",
+					body: JSON.stringify({
+						email: email,
+						password: password,
+						email: name,
+						is_active: is_active
+					}),
+					redirect: "follow"
+				};
+
+				fetch("https://3000-plum-tarsier-6ediw6c1.ws-us03.gitpod.io/createUser", requestOptions)
+					.then(response => response.json())
+					.then(result => console.log(result))
+					.catch(error => console.log("error", error));
+			},
 			//carga en el array de planets lo que se obtenga en el fetch
 			getPlanets: async () => {
 				const store = getStore();
-				fetch("https://swapi.dev/api/planets/")
+				fetch("https://3000-plum-tarsier-6ediw6c1.ws-us03.gitpod.io/planets")
 					.then(response => response.json())
 					.then(data => {
 						setStore({ planets: data.results });
@@ -75,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			//carga en el array de people lo que se obtenga en el fetch
 			getPeoples: async () => {
 				const store = getStore();
-				fetch("https://swapi.dev/api/people/")
+				fetch("ttps://3000-plum-tarsier-6ediw6c1.ws-us03.gitpod.io/person")
 					.then(response => response.json())
 					.then(data => {
 						setStore({ peoples: data.results });

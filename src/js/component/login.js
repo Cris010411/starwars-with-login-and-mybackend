@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import rigoImage from "../../img/person.jpg";
 import "../../styles/index.scss";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Context } from "../store/appContext";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -10,7 +10,16 @@ import { propTypes } from "react-bootstrap/esm/Image";
 
 export const Login = props => {
 	const { store, actions } = useContext(Context);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const token = sessionStorage.getItem("token");
+	const history = useHistory;
 
+	const handleClick = () => {
+		actions.Login(email, password).then(() => {
+			history.push("/");
+		});
+	};
 	return (
 		<div className="container-fluid pos">
 			<div className="d-flex justify-content-center h-100">
@@ -37,7 +46,13 @@ export const Login = props => {
 										<i className="fas fa-envelope" />
 									</span>
 								</div>
-								<input type="text" className="form-control" placeholder="@" />
+								<input
+									type="text"
+									className="form-control"
+									placeholder="@"
+									value={email}
+									onChange={() => setEmail(e.target.value)}
+								/>
 							</div>
 							<div className="input-group form-group">
 								<div className="input-group-prepend">
@@ -45,14 +60,25 @@ export const Login = props => {
 										<i className="fas fa-key" />
 									</span>
 								</div>
-								<input type="password" className="form-control" placeholder="password" />
+								<input
+									type="password"
+									className="form-control"
+									placeholder="password"
+									value={password}
+									onChange={() => setPassword(e.target.value)}
+								/>
 							</div>
 							<div className="row align-items-center remember">
 								<input type="checkbox" />
 								Remember Me
 							</div>
 							<div className="form-group">
-								<input type="submit" value="Login" className="btn float-right login_btn" />
+								<input
+									type="submit"
+									value="Login"
+									className="btn float-right login_btn"
+									onClick={handleClick}
+								/>
 							</div>
 						</form>
 					</div>
